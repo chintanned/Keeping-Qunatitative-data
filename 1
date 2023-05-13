@@ -1,0 +1,30 @@
+function deleteColumnsWithText() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var range = sheet.getActiveRange();
+  var values = range.getValues();
+  var columnsToDelete = [];
+
+  for (var j = range.getColumn(); j <= range.getLastColumn(); j++) {
+    var hasText = false;
+
+    for (var i = range.getRow(); i <= range.getLastRow(); i++) {
+      if (typeof values[i - range.getRow()][j - range.getColumn()] === 'string') {
+        var regex = /\D/g; // Regular expression to match non-digit characters
+        if (values[i - range.getRow()][j - range.getColumn()].match(regex)) {
+          hasText = true;
+          break;
+        }
+      }
+    }
+
+    if (hasText) {
+      columnsToDelete.push(j);
+    }
+  }
+
+  columnsToDelete.reverse(); // Reverse the array to maintain correct column indexes after deletion
+
+  columnsToDelete.forEach(function (column) {
+    sheet.deleteColumn(column);
+  });
+}
